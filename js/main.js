@@ -1,6 +1,3 @@
-var USE_WEBCAM = true;
-var webcamVideo = null;
-
 window.onload = function(){
     init();
     setWebcamTexture();
@@ -28,15 +25,6 @@ function init() {
         mouse: { type: "v2", value: new THREE.Vector2() },
         backbuffer: { type: "t", value: renderTarget2 }
     };
-
-    webcamTexture = new THREE.Texture();
-
-    if(webcamVideo){
-        webcamTexture = new THREE.Texture(webcamVideo);
-        webcamTexture.minFilter = THREE.LinearFilter;
-        webcamTexture.magFilter = THREE.LinearFilter;
-        uniforms.webcam = { type: "t", value: webcamTexture };
-    }
 
     material = new THREE.ShaderMaterial( {
         uniforms: uniforms,
