@@ -1,8 +1,3 @@
-window.onload = function(){
-    init();
-    setWebcamTexture();
-}
-
 var container;
 var camera, scene, renderer;
 var uniforms;
@@ -52,8 +47,8 @@ function init() {
 }
 
 function createRenderTargets(){
-    renderTarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
-    renderTarget2 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
+    renderTarget1 = new THREE.WebGLRenderTarget(window.innerWidth/data.settings.quality, window.innerHeight/data.settings.quality, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
+    renderTarget2 = new THREE.WebGLRenderTarget(window.innerWidth/data.settings.quality, window.innerHeight/data.settings.quality, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
 }
 
 function setWebcamTexture(){
@@ -66,8 +61,12 @@ function setWebcamTexture(){
     });
 }
 
+function removeWebcamTexture(){
+    webcamStream.getVideoTracks()[0].stop();
+}
+
 function onWindowResize(event) {
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth/data.settings.quality, window.innerHeight/data.settings.quality);
     uniforms.resolution.value.x = renderer.domElement.width;
     uniforms.resolution.value.y = renderer.domElement.height;
     createRenderTargets();
