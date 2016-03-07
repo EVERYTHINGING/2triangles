@@ -3,6 +3,7 @@ var camera, scene, renderer;
 var uniforms;
 var material;
 var renderTarget1, renderTarget2, webcamTexture;
+var startTime = Date.now();
 
 function init() {
     container = document.getElementById('container');
@@ -79,7 +80,7 @@ function animate() {
 
 function render() {
     if(uniforms.webcam){ webcamTexture.needsUpdate = true; }
-    uniforms.time.value += 0.05;
+    uniforms.time.value = (Date.now() - startTime) / 1000;
     uniforms.backbuffer.value = renderTarget2;
     
     renderer.render(scene, camera, renderTarget1, false);

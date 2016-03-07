@@ -3,7 +3,8 @@ var data = {
 		hideCode: false,
 		quality: 1,
 		webcam: true
-	}
+	},
+	controls: {}
 }
 
 function initGUI(){
@@ -14,7 +15,6 @@ function initGUI(){
 function initEditor(){
 	var $textArea = $('#codemirror-container__inner textarea');
 	$textArea.text($('#fragmentShader').text().trim());
-	console.log($textArea.text());
 
 	var editor = CodeMirror.fromTextArea($textArea[0], {
 	    keyMap: 'sublime',
@@ -24,10 +24,13 @@ function initEditor(){
 	});
 
 	editor.on('change', function(){
+		var code = editor.getValue();
 	    material.fragmentShader = editor.getValue();
 	    material.needsUpdate = true;
 	});
 }
+
+var controlsFolder;
 
 function initDAT(){
 	var GUI = new dat.GUI();
@@ -54,4 +57,16 @@ function initDAT(){
     });
 
     if(data.settings.webcam){ setWebcamTexture(); }
+}
+
+function addControl(name, value, type){
+	data.controls[name] = value;
+	uniforms[name] = { type: "f", value: value };
+
+	var control = controlsFolder.add(data.controls, name, 0.0, 1.0).listen();
+    control.onFinishChange(function(value){
+        uniforms[name].value = value;
+    });
+
+    material.needsUpdate = true;
 }
