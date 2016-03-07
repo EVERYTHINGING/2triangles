@@ -1,0 +1,38 @@
+<html>
+    <body>
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/main.css">
+        </head>
+        <div id="container"></div>
+        <script src="js/lib/three.min.js"></script>
+        <script src="js/helpers.js"></script>
+        <script src="js/main.js"></script>
+
+        <script id="vertexShader" type="x-shader/x-vertex">
+            void main() {
+                gl_Position = vec4(position, 1.0);
+            }
+        </script>
+        <script id="fragmentShader" type="x-shader/x-fragment">
+            uniform vec2 resolution;
+            uniform vec2 mouse;
+            uniform float time;
+            uniform sampler2D backbuffer;
+            uniform sampler2D webcam;
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy/resolution.xy)* 2.0 - 1.0;
+                uv *= resolution/min(resolution.x, resolution.y);
+                uv *= distance(uv, vec2(0.0));
+
+                vec4 webcamRGBA = texture2D(webcam, (gl_FragCoord.xy/resolution.xy));
+                vec4 backbufferRGBA = texture2D(backbuffer, (gl_FragCoord.xy/resolution.xy));
+                vec4 color = webcamRGBA;
+
+                if(webcamRGBA.r < 0.5){ color = backbufferRGBA; }
+
+                gl_FragColor = vec4(color);
+            }
+        </script>
+    </body>
+</html>
