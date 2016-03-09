@@ -13,12 +13,81 @@
                 </div>
             </div>
         </div>
+        <div class="modal">
+            <div class="modal__inner">
+                <div class="modal__form-container">
+                    <label for="select--type">Type of Control</label>
+                    <select id="select--type">
+                        <option value="checkbox">Checkbox</option>
+                        <option value="number">Number</option>
+                        <option value="color">Color</option>
+                        <option value="texture">Texture URL</option>
+                    </select>
+
+                    <form id="modal__form--checkbox" class="modal__form">
+                        <label for="input--checkbox-name">Name</label>
+                        <input id="input--checkbox-name" class="input-uniform-name" type="text" required></input>
+
+                        <label for="input--checkbox-checked">Checked</label>
+                        <input id="input--checkbox-checked" type="checkbox"></input>
+
+                        <input type="submit" value="Add Control"></input>
+                    </form>
+
+                    <form id="modal__form--number" class="modal__form">
+                        <label for="input--number-name">Name</label>
+                        <input id="input--number-name" class="input-uniform-name" type="text" required></input>
+
+                        <label for="input--number-value">Value</label>
+                        <input id="input--number-value" type="text" required></input>
+
+                        <label for="input--number-min">Min Value (optional)</label>
+                        <input id="input--number-min" type="text"></input>
+
+                        <label for="input--number-max">Max Value (optional)</label>
+                        <input id="input--number-max" type="text"></input>
+
+                        <label for="input--number-step">Step Size (optional)</label>
+                        <input id="input--number-step" type="text"></input>
+
+                        <input type="submit" value="Add Control"></input>
+                    </form>
+
+                    <form id="modal__form--color" class="modal__form">
+                        <label for="input--color-name">Name</label>
+                        <input id="input--color-name" class="input-uniform-name" type="text" required></input>
+
+                        <label for="input--color-red">Red (0-1)</label>
+                        <input id="input--color-red" type="text" value="0.5" required></input>
+
+                        <label for="input--color-green">Green (0-1)</label>
+                        <input id="input--color-green" type="text" value="0.5" required></input>
+
+                        <label for="input--color-blue">Blue (0-1)</label>
+                        <input id="input--color-blue" type="text" value="0.5" required></input>
+
+                        <input type="submit" value="Add Control"></input>
+                    </form>
+
+                    <form id="modal__form--texture" class="modal__form">
+                        <label for="input--texture-name">Name</label>
+                        <input id="input--texture-name" class="input-uniform-name" type="text" required></input>
+
+                        <label for="input--texture-url">URL</label>
+                        <input id="input--texture-url" type="text" required></input>
+
+                        <input type="submit" value="Add Control"></input>
+                    </form>
+                </div>
+            </div>
+        </div>
         <script src="js/lib/jquery-1.11.3.min.js"></script>
         <script src="js/lib/codemirror.js"></script>
         <script src="js/lib/codemirror-clike.js"></script>
         <script src="js/lib/codemirror-keymap-sublime.js"></script>
         <script src="js/lib/dat.gui.js"></script>
         <script src="js/lib/three.min.js"></script>
+        <script src="js/lib/parsley.min.js"></script>
         <script src="js/helpers.js"></script>
         <script src="js/gui.js"></script>
         <script src="js/main.js"></script>

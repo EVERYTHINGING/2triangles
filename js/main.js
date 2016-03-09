@@ -64,6 +64,8 @@ function setWebcamTexture(){
 
 function removeWebcamTexture(){
     webcamStream.getVideoTracks()[0].stop();
+    uniforms.webcam = null;
+    material.needsUpdate = true;
 }
 
 function onWindowResize(event) {
