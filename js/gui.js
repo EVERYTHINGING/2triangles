@@ -127,14 +127,16 @@ function addControl(name, value, type){
 
 	switch(type){
 		case "checkbox":
-			uniforms[name] = { type: "bool", value: value };
-			
 			var control = controlsFolder.add(data.controls[name], name, value).listen();
 		    control.onFinishChange(function(value){
-		        uniforms[name].value = value;
+		    	var oldLine = "const bool "+name+" = "+(!value);
+		    	var newLine = "const bool "+name+" = "+value;
+		        code = code.replace(oldLine, newLine);
+		        editor.setValue(code);
+		        console.log(name, value);
 		    });
 
-		    code = "uniform bool "+name+";\n"+code;
+		    code = "const bool "+name+" = "+value+";\n"+code;
 		break;
 		case "number":
 			uniforms[name] = { type: "f", value: value.val };
@@ -165,7 +167,7 @@ function addControl(name, value, type){
 
 		    control.onChange(function(value){
 		        uniforms[name].value = value;
-		        console.log(value);
+		        console.log(name, value);
 		    });
 
 		    code = "uniform float "+name+";\n"+code;
@@ -175,17 +177,27 @@ function addControl(name, value, type){
 
 			var control = controlsFolder.addColor(data.controls[name], name, [value[0]*255, value[1]*255, value[2]*255]).listen();
 		    control.onChange(function(value){
+		    	//sometimes dat returns a hex value instead of an array
+		    	if(typeof value === "string"){
+		    		value = hexToRgb(value);
+		    	}
+		    	console.log(value);
 		        uniforms[name].value = new THREE.Vector3(value[0]/255, value[1]/255, value[2]/255);
+		        console.log(name, uniforms[name].value);
 		    });
 
 		    code = "uniform vec3 "+name+";\n"+code;
 		break;
 		case "texture":
-			uniforms[name] = { type: "t", value: new THREE.TextureLoader().load(value) };
+			var loader = new THREE.TextureLoader().load(value, function(texture){
+				uniforms[name] = { type: "t", value: texture };
+			});
 			
 			var control = controlsFolder.add(data.controls[name], name, value).listen();
 		    control.onFinishChange(function(value){
-		        uniforms[name].value = new THREE.TextureLoader().load(value);
+		        var loader = new THREE.TextureLoader().load(value, function(texture){
+					uniforms[name] = { type: "t", value: texture };
+				});
 		    });
 
 		    code = "uniform sampler2D "+name+";\n"+code;
