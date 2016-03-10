@@ -22,6 +22,11 @@ canvas {
 	z-index: 9999;
 }
 
+.dg.main {
+	z-index: 99999 !important;
+	opacity: 1 !important;
+}
+
 .modal {
 	display: none;
 	position: fixed;

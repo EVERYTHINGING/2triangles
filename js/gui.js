@@ -4,7 +4,12 @@ var data = {
 		quality: 1,
 		webcam: true
 	},
-	controls: { }
+	controls: {
+		color1: {
+			color1: '#ffffff',
+			type: 'color'
+		}
+	}
 }
 
 function initGUI(){
@@ -60,6 +65,10 @@ function initDAT(){
     });
 
     if(data.settings.webcam){ setWebcamTexture(); }
+
+    $.each(data.controls, function(key, value){
+    	addControl(key, value[key], value.type, false);
+    });
 }
 
 function initDOM(){
@@ -74,6 +83,10 @@ function initDOM(){
 		$('.modal__form').hide();
 		$('#modal__form--'+selectedType).show();
 	});
+
+	$('.modal__close-btn').click(function(){
+		$('.modal').removeClass('active');
+	})
 
 	$('.modal__form').on('submit', function(event){
 		var $form = $(this);
@@ -98,7 +111,7 @@ function initDOM(){
 					max: parseFloat(max),
 					step: parseFloat(step)
 				};
-
+				console.log(numberObj);
 				addControl(name, numberObj, "number");
 			break;
 			case "color":
@@ -116,12 +129,16 @@ function initDOM(){
 
 }
 
-function addControl(name, value, type){
-	data.controls[name] = {
-		type: type
-	};
+function addControl(name, value, type, addToData){
+	addToData = typeof addToData !== 'undefined' ? addToData : true;
 
-	data.controls[name][name] = value;
+	if(addToData){
+		data.controls[name] = {
+			type: type
+		};
+
+		data.controls[name][name] = value;
+	}
 
 	var code = editor.getValue();
 
@@ -131,6 +148,7 @@ function addControl(name, value, type){
 		    control.onFinishChange(function(value){
 		    	var oldLine = "const bool "+name+" = "+(!value);
 		    	var newLine = "const bool "+name+" = "+value;
+		    	code = editor.getValue();
 		        code = code.replace(oldLine, newLine);
 		        editor.setValue(code);
 		        console.log(name, value);
@@ -141,30 +159,31 @@ function addControl(name, value, type){
 		case "number":
 			uniforms[name] = { type: "f", value: value.val };
 
-			data.controls[name][name] = value.val;
-
+			if(addToData){ data.controls[name][name] = value.val; }
+			
 			var control;			
 
 			if(value.min){ 
-				data.controls[name]["min"] = value.min;
+				if(addToData){ data.controls[name]["min"] = value.min; }
 			}
 			if(value.max){
-				data.controls[name]["max"] = value.max;
+				if(addToData){ data.controls[name]["max"] = value.max; }
 			}
 
 			if(value.min && value.max){
-				control = controlsFolder.add(data.controls[name], name, value.min, value.max).listen();
+				control = controlsFolder.add(data.controls[name], name, value.min, value.max);
 			}else{
-				control = controlsFolder.add(data.controls[name], name, value.val).listen();
+				control = controlsFolder.add(data.controls[name], name).listen();
 				if(value.min){ control.min(value.min); }
 				if(value.max){ control.max(value.max); }
 			}
 
 			if(value.step){
 				control.step(value.step);
-				data.controls[name]["step"] = value.step;
+				if(addToData){ data.controls[name]["step"] = value.step; }
 			}
 
+			control.listen();
 		    control.onChange(function(value){
 		        uniforms[name].value = value;
 		        console.log(name, value);
@@ -173,6 +192,9 @@ function addControl(name, value, type){
 		    code = "uniform float "+name+";\n"+code;
 		break;
 		case "color":
+			if(typeof value === "string"){
+	    		value = hexToRgb(value);
+	    	}
 			uniforms[name] = { type: "v3", value: new THREE.Vector3(value[0], value[1], value[2]) };
 
 			var control = controlsFolder.addColor(data.controls[name], name, [value[0]*255, value[1]*255, value[2]*255]).listen();
